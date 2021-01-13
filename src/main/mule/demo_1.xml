@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:cluster="http://www.mulesoft.org/schema/mule/ee/cluster"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="26ed607a-f699-4f2d-8b70-06b672e1eb99" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+<configuration>
+    <dynamic-config-expiration>
+      <expiration-policy maxIdleTime="30" timeUnit="SECONDS" />
+    </dynamic-config-expiration>
+  </configuration>
+	<file:config name="File_Config" doc:name="File Config" doc:id="8c58e684-251f-43a7-8744-2a933740a4ed" />
+	<flow name="demo_1Flow" doc:id="09a6b11c-5e1e-4207-b02c-c2b6ee4f5efd" >
+		<http:listener doc:name="Listener" doc:id="ba326988-824b-4432-ba14-480569278cea" config-ref="HTTP_Listener_config" path="/test" outputMimeType="application/xml"/>
+		<ee:transform doc:name="Transform Message" doc:id="69153dd9-4277-4272-b05e-bf23381d17b0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Application output is displayed"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="2d3dd53e-e65e-4f1e-93ad-209b71d911e3" message="#[payload]"/>
+	</flow>
+</mule>
